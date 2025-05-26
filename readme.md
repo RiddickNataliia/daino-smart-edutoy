@@ -1,9 +1,9 @@
 # Project Title
 
-**FIRST & LAST NAME:** A B
+**FIRST NAME LAST NAME:** NATALIIA RIDDICK
 
-**Sparring Partner:** C D
+**Sparring Partner:** Wiktoria Przykucka
 
-**Project Summary in max 10 words:** E
+**Project Summary in max 10 words:** Interactive dinosaur toy teaches colors and shapes using computer vision
 
-**Project Title:** F
+**Project Title:** DAINO
