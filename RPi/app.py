@@ -1,14 +1,10 @@
 import threading
 import queue
 import time
-
 import smbus
-
-# Bluez gatt uart service (SERVER)
 from ble_utils.bluetooth_uart_server import ble_gatt_uart_loop, get_ble_mac
 
-# TODO: 1) print BLE device name on LCD on app start
-# TODO: 2) print incoming bluetooth messages on LCD
+# LCD constants
 LCD_I2C_ADDR = 0x27  
 LCD_WIDTH = 16
 LCD_CHR = 1
@@ -20,7 +16,7 @@ E_PULSE = 0.0005
 E_DELAY = 0.0005
 
 class LCD:
-    def _init_(self, addr=LCD_I2C_ADDR, bus=1): 
+    def __init__(self, addr=LCD_I2C_ADDR, bus=1):  
         self.bus = smbus.SMBus(bus)
         self.addr = addr
         self._init_lcd()
@@ -37,10 +33,8 @@ class LCD:
     def _lcd_byte(self, bits, mode):
         bits_high = mode | (bits & 0xF0) | 0x08
         bits_low = mode | ((bits << 4) & 0xF0) | 0x08
-
         self.bus.write_byte(self.addr, bits_high)
         self._toggle_enable(bits_high)
-
         self.bus.write_byte(self.addr, bits_low)
         self._toggle_enable(bits_low)
 
@@ -60,14 +54,17 @@ class LCD:
         for char in text:
             self._lcd_byte(ord(char), LCD_CHR)
 
-
 def main():
     print("[app] Adapter MAC:", get_ble_mac())
 
     rx_q = queue.Queue()
     tx_q = queue.Queue()
-    device_name = "piofnat" #replace with your own (unique) device name
-    evt_q = queue.Queue()          # New queue which provides the connection state of our ble server
+    device_name = "piofnat"
+    evt_q = queue.Queue()
+
+    # Initialize LCD and show device name
+    lcd = LCD() 
+    lcd.message(f"Device: {device_name}", LINE_1)
 
     threading.Thread(target=ble_gatt_uart_loop, args=(rx_q, tx_q, device_name, evt_q), daemon=True).start()
     try:         
@@ -75,14 +72,14 @@ def main():
             try:
                 incoming = rx_q.get_nowait()
                 print("In main loop: {}".format(incoming))
+                lcd.message(str(incoming)[:LCD_WIDTH], LINE_2)  
             except queue.Empty:
-                pass # nothing in Q 
+                pass
             time.sleep(0.01)
     except KeyboardInterrupt:
         pass
     finally:
-        # TODO: maybe cleanup if needed or code get's extended
-        pass
-        
+        lcd.clear()  
+
 if __name__ == '__main__':
     main()
