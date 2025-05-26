@@ -2,12 +2,63 @@ import threading
 import queue
 import time
 
+import smbus
+
 # Bluez gatt uart service (SERVER)
 from ble_utils.bluetooth_uart_server import ble_gatt_uart_loop, get_ble_mac
 
 # TODO: 1) print BLE device name on LCD on app start
 # TODO: 2) print incoming bluetooth messages on LCD
+LCD_I2C_ADDR = 0x27  
+LCD_WIDTH = 16
+LCD_CHR = 1
+LCD_CMD = 0
+LINE_1 = 0x80
+LINE_2 = 0xC0
+ENABLE = 0b00000100
+E_PULSE = 0.0005
+E_DELAY = 0.0005
 
+class LCD:
+    def _init_(self, addr=LCD_I2C_ADDR, bus=1): 
+        self.bus = smbus.SMBus(bus)
+        self.addr = addr
+        self._init_lcd()
+
+    def _init_lcd(self):
+        self._lcd_byte(0x33, LCD_CMD)
+        self._lcd_byte(0x32, LCD_CMD)
+        self._lcd_byte(0x06, LCD_CMD)
+        self._lcd_byte(0x0C, LCD_CMD)
+        self._lcd_byte(0x28, LCD_CMD)
+        self._lcd_byte(0x01, LCD_CMD)
+        time.sleep(E_DELAY)
+
+    def _lcd_byte(self, bits, mode):
+        bits_high = mode | (bits & 0xF0) | 0x08
+        bits_low = mode | ((bits << 4) & 0xF0) | 0x08
+
+        self.bus.write_byte(self.addr, bits_high)
+        self._toggle_enable(bits_high)
+
+        self.bus.write_byte(self.addr, bits_low)
+        self._toggle_enable(bits_low)
+
+    def _toggle_enable(self, bits):
+        time.sleep(E_DELAY)
+        self.bus.write_byte(self.addr, bits | ENABLE)
+        time.sleep(E_PULSE)
+        self.bus.write_byte(self.addr, bits & ~ENABLE)
+        time.sleep(E_DELAY)
+
+    def clear(self):
+        self._lcd_byte(0x01, LCD_CMD)
+
+    def message(self, text, line=LINE_1):
+        text = text.ljust(LCD_WIDTH)
+        self._lcd_byte(line, LCD_CMD)
+        for char in text:
+            self._lcd_byte(ord(char), LCD_CHR)
 
 
 def main():
