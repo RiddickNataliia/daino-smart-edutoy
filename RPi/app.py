@@ -15,7 +15,7 @@ def main():
 
     rx_q = queue.Queue()
     tx_q = queue.Queue()
-    device_name = "your-device-name" # TODO: replace with your own (unique) device name
+    device_name = "piofnat" #replace with your own (unique) device name
     evt_q = queue.Queue()          # New queue which provides the connection state of our ble server
 
     threading.Thread(target=ble_gatt_uart_loop, args=(rx_q, tx_q, device_name, evt_q), daemon=True).start()
