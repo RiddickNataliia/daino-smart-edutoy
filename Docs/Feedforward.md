@@ -6,7 +6,7 @@
 
 **Project Summary in max 10 words:** Interactive dinosaur toy teaches colors and shapes using computer vision
 
-**Project Title:** Color Block Academy (CBA)
+**Project Title:** DAINO
 
 # Tips for Feedback Conversations
 
@@ -32,13 +32,13 @@
 
 # Feedforward Conversations
 
-## Conversation 1 (Date: xx/xx/2025)
+## Conversation 1 (Date: 27/05/2025)
 
-Lecturer:
+Lecturer: Claudia Eeckhout and Thomas Huyghebaert
 
-Questions for this conversation:
+Questions for this conversation: 
 
-- Question 1: V
+- Question 1: Can the imposed deadline schedule be slightly adjusted in view of the specifics of my project?
 
 This is the feedback on my questions.
 
