@@ -34,7 +34,7 @@
 
 ## Conversation 1 (Date: 27/05/2025)
 
-Lecturer: Claudia Eeckhout and Thomas Huyghebaert
+Lecturer: Claudia and Thomas
 
 Questions for this conversation: 
 
@@ -42,28 +42,28 @@ Questions for this conversation:
 
 This is the feedback on my questions.
 
-- Feedback 1: G
+- Feedback 1: I was allowed to use the dataset from my previous project to demonstrate my annotation skills. Over the weekend I will finish the phisical part of the toy and collect + annotate the dataset. On Monday I will meet with Thomas to show him the new dataset.
 
-## Conversation 2 (Date: xx/xx/2025)
+## Conversation 2 (Date: 27/05/2025)
 
-Lecturer:
-
-Questions for this conversation:
-
-- Question 1: V
-
-This is the feedback on my questions.
-
-- Feedback 1: G
-
-## Conversation 3 (Date: xx/xx/2025)
-
-Lecturer:
+Lecturer: Tijn 
 
 Questions for this conversation:
 
-- [x] Question 1: V
+- Question 1: I shared some design ideas with Tijn to check their feasibility.
 
 This is the feedback on my questions.
 
-- Feedback 1: G
+- Feedback 1: The idea to put a box under the toy to collect the color pieces was approved. The suggestion to relocate the servo motor was advised against.
+
+## Conversation 3 (Date: 28/05/2025)
+
+Lecturer: Paula
+
+Questions for this conversation:
+
+- [x] Question 1: Will the angle at which the pieces are facing the camera significantly impact the detection accuracy?
+
+This is the feedback on my questions.
+
+- Feedback 1: If I test and see that the accuracy isn't great, I can try keypoint annotation instead of boxes.
