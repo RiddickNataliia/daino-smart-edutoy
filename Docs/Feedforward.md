@@ -67,3 +67,59 @@ Questions for this conversation:
 This is the feedback on my questions.
 
 - Feedback 1: If I test and see that the accuracy isn't great, I can try keypoint annotation instead of boxes.
+
+## Conversation 4 (Date: 02/06/2025)
+
+Lecturer: Claudia
+
+Questions for this conversation:
+
+- [x] Question 1: How best to handle the insertion of wrong pieces in terms of UI: to instruct the child to remove them or to allow them to keep adding pices until the right one is found.
+- [x] Question 2: For good-to-haves that include playing with numbers, there is an issue: number 1 and 7 that I managed to get hold of are very hard to distinguish for a child, plus it is impossible to distinguish numbers six and nine. To avoid these problems, would it be reasonable to focus on numbers 1-5 for now?
+
+This is the feedback on my questions.
+
+- Feedback 1: I was advised to give clear feedback to the child that the inserted pice is wrong (sound and light) and to block any future actions until the wrong piece is removed.
+- Feedback 2: Claudia thought it was reasonable to focus the game on numbers 1-5, but highlighted the importance of implementing the main specs before moving onto the add-ons.
+
+## Conversation 5 (Date: 28/05/2025)
+
+Lecturer: Thomas
+
+Questions for this conversation:
+
+- [x] Question 1: The purpose of the meeting is to show my dataset, because due to the specifics of my project, I had to submit a different dataset in the assignment before the deadline.
+- [x] Question 2: How to best implement the scenario whe the wronf piece(s) is inserted in terms of the AI model?
+
+This is the feedback on my questions.
+
+- Feedback 1: The dataset lookds good and the preliminary model performs well
+- Feedback 2: Allowing the wrong piece being 'swallowed' when placed under the correct one doesn't appear to be a big issue. 
+
+## Conversation 6 (Date: 28/05/2025)
+
+Lecturer: Peter Jan
+
+Questions for this conversation:
+
+- [x] Question 1: My RasPi keeps turning off whenever I connect my servo motor. Additional power supply didn't help. What might be the issue?
+
+This is the feedback on my questions.
+
+- Feedback 1: Servo wiring is faulty.
+
+## Conversation 7 (Date: 28/05/2025)
+
+Lecturer: Tijn
+
+Questions for this conversation:
+
+- [x] Question 1: In my previous Maker's Skills assignment I lost 2 points, and I need to know what was wrong to fix it before the next submission.
+- [x] Question 2: I showed the prototype I have so far to hear any feedback.
+
+This is the feedback on my questions.
+
+- Feedback 1: The consern was that the servo won't stay in place inside the mouth of the toy, but this is not the case, so it won't be a problem for my next submission.
+- Feedback 2: The work I've done with the prototype looks good. My Maker's Skills part should get good grades because I am doing more in this regard than is usually done for this project.
+
+
