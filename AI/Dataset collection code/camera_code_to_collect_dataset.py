@@ -1,6 +1,7 @@
 import cv2
 import os
 
+
 # Create output folder if it doesn't exist
 output_folder = "captured_images"
 os.makedirs(output_folder, exist_ok=True)
@@ -29,7 +30,7 @@ while True:
         print("Exiting...") 
         break
     elif key % 256 == 32:  # Spacebar
-        img_name = f"{output_folder}/image_{img_counter:07d}.jpg"
+        img_name = f"{output_folder}/image_{img_counter:02d}.jpg"
         cv2.imwrite(img_name, frame)
         print(f"Saved: {img_name}")
         img_counter += 1
