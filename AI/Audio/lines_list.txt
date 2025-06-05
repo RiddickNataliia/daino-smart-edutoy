@@ -9,3 +9,15 @@
 9. Reacting to correct inputs.
 10. Encouragement phrases.
 
+
+/audio/
+├── start/
+│   ├── start_color_game.mp3
+│   └── start_shape_game.mp3
+├── names/
+│   ├── shapes/
+│   └── colors/
+├── requests/
+├── rejections/
+├── success/
+├── encouragement/
