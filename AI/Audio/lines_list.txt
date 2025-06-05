@@ -1,0 +1,11 @@
+1. To announce the start of the shape game
+2. To announce the start of the color game
+3. Naming all the shapes: square, circle, triangle, pentagon ("this is a circle!")
+4. Naming all the colors: yellow, blue, green, red, purple.
+5. Requesting specific shapes.
+6. Requesting specific colors.
+7. Rejecting incorrect inputs (general rejection followed by naming the wrong input (see steps 3 and 4).
+8. Rejecting multiples.
+9. Reacting to correct inputs.
+10. Encouragement phrases.
+
