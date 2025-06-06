@@ -8,7 +8,7 @@ def main():
 
     # Train the model
     model.train(
-        data="C:\Users\natal\Documents\2024-2025\Semester 2\Project One\Anotated Datasets\DAINO SHAPES.v6i.yolov11", 
+        data="C:/Users/natal/Documents/2024-2025/Semester 2/Project One/Anotated Datasets/DAINO SHAPES.v6i.yolov11/data.yaml", 
           # Path to your dataset configuration
         epochs=400,
         verbose=True,
@@ -42,11 +42,11 @@ def main():
 
     # Validate on the validation set
     print("\nRunning Validation on Validation Set...")
-    best_model.val(task="detect", data="C:\Users\natal\Documents\2024-2025\Semester 2\Project One\Anotated Datasets\DAINO SHAPES.v6i.yolov11")
+    best_model.val(task="detect", data="C:/Users/natal/Documents/2024-2025/Semester 2/Project One/Anotated Datasets/DAINO SHAPES.v6i.yolov11/data.yaml")
 
     # Test on a separate test set
     print("\nRunning Testing on Test Set...")
-    best_model.val(task="detect", data="C:\Users\natal\Documents\2024-2025\Semester 2\Project One\Anotated Datasets\DAINO SHAPES.v6i.yolov11", split="test")
+    best_model.val(task="detect", data="C:/Users/natal/Documents/2024-2025/Semester 2/Project One/Anotated Datasets/DAINO SHAPES.v6i.yolov11/data.yaml", split="test")
 
     # Export model to TensorFlow Lite format
     print("\nExporting Model to TFLite...")
