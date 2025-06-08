@@ -2,10 +2,12 @@ from ultralytics import YOLO
 import cv2
 from utils.helpers import get_random_encouragement
 
+# resized = cv2.resize(frame, (640, 640))
+# results = self.model(resized)
 class AIHandler:
     def __init__(self):
-        self.color_model = YOLO("color_model.pt")
-        self.shape_model = YOLO("shape_model.pt")
+        self.color_model = YOLO("models/color_model.pt")
+        self.shape_model = YOLO("models/shape_model.pt")
 
     def detect(self, image, mode):
         if mode == "color":

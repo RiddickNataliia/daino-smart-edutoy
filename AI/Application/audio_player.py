@@ -5,6 +5,7 @@ import pygame
 class AudioPlayer:
     def __init__(self):
         pygame.mixer.init()
+        volume = pygame.mixer.music.set_volume(0.7)
 
     def play_file(self, path):
         pygame.mixer.music.load(path)

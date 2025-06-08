@@ -34,92 +34,104 @@
 
 ## Conversation 1 (Date: 27/05/2025)
 
-Lecturer: Claudia and Thomas
+# Project Supervision Log
 
-Questions for this conversation: 
+## Conversation 1
 
-- Question 1: Can the imposed deadline schedule be slightly adjusted in view of the specifics of my project?
+# Project Supervision Log
 
-This is the feedback on my questions.
+## Conversation 1
 
-- Feedback 1: I was allowed to use the dataset from my previous project to demonstrate my annotation skills. Over the weekend I will finish the phisical part of the toy and collect + annotate the dataset. On Monday I will meet with Thomas to show him the new dataset.
+**Lecturers:** Claudia and Thomas
+
+**Question:**  
+- Can the project deadline be slightly adjusted due to the specific requirements of my toy project?
+
+**Feedback:**  
+- I was allowed to use the dataset from my previous project to demonstrate my annotation skills.  
+- Over the weekend, I will complete the physical construction of the toy and collect and annotate the new dataset.  
+- On Monday, I will meet with Thomas to present the updated dataset.
+
+---
 
 ## Conversation 2 (Date: 27/05/2025)
 
-Lecturer: Tijn 
+**Lecturer:** Tijn
 
-Questions for this conversation:
+**Question:**  
+- I shared some design ideas with Tijn to assess their feasibility.
 
-- Question 1: I shared some design ideas with Tijn to check their feasibility.
+**Feedback:**  
+- The idea to place a box under the toy to collect color pieces was approved.  
+- The suggestion to move the servo motor to a different location was discouraged.
 
-This is the feedback on my questions.
-
-- Feedback 1: The idea to put a box under the toy to collect the color pieces was approved. The suggestion to relocate the servo motor was advised against.
+---
 
 ## Conversation 3 (Date: 28/05/2025)
 
-Lecturer: Paula
+**Lecturer:** Paula
 
-Questions for this conversation:
+**Question:**  
+- Will the angle at which pieces face the camera significantly affect detection accuracy?
 
-- [x] Question 1: Will the angle at which the pieces are facing the camera significantly impact the detection accuracy?
+**Feedback:**  
+- If testing shows that accuracy is poor, I can consider switching from bounding boxes to keypoint annotation.
 
-This is the feedback on my questions.
-
-- Feedback 1: If I test and see that the accuracy isn't great, I can try keypoint annotation instead of boxes.
+---
 
 ## Conversation 4 (Date: 02/06/2025)
 
-Lecturer: Claudia
+**Lecturer:** Claudia
 
-Questions for this conversation:
+**Questions:**  
+- What is the best way to handle incorrect piece insertion in terms of UI: should the child be asked to remove it, or should they be allowed to keep adding pieces until the correct one is detected?  
+- For potential game add-ons involving numbers: since 1 and 7 look similar to children, and 6 and 9 are hard to distinguish in general, would it make sense to focus only on numbers 1–5?
 
-- [x] Question 1: How best to handle the insertion of wrong pieces in terms of UI: to instruct the child to remove them or to allow them to keep adding pices until the right one is found.
-- [x] Question 2: For good-to-haves that include playing with numbers, there is an issue: number 1 and 7 that I managed to get hold of are very hard to distinguish for a child, plus it is impossible to distinguish numbers six and nine. To avoid these problems, would it be reasonable to focus on numbers 1-5 for now?
+**Feedback:**  
+- I was advised to give clear, immediate feedback (e.g. sound and light) when a wrong piece is inserted and to prevent further interaction until it is removed.  
+- Claudia agreed that limiting the number range to 1–5 is a reasonable choice, but emphasized the need to first complete all core features before adding extras like number games.
 
-This is the feedback on my questions.
-
-- Feedback 1: I was advised to give clear feedback to the child that the inserted pice is wrong (sound and light) and to block any future actions until the wrong piece is removed.
-- Feedback 2: Claudia thought it was reasonable to focus the game on numbers 1-5, but highlighted the importance of implementing the main specs before moving onto the add-ons.
+---
 
 ## Conversation 5 (Date: 28/05/2025)
 
-Lecturer: Thomas
+**Lecturer:** Thomas
 
-Questions for this conversation:
+**Questions:**  
+- I need to show my dataset because, due to the nature of my project, I submitted a different one before the deadline.  
+- How should the system handle the AI model logic when the wrong piece is inserted?
 
-- [x] Question 1: The purpose of the meeting is to show my dataset, because due to the specifics of my project, I had to submit a different dataset in the assignment before the deadline.
-- [x] Question 2: How to best implement the scenario whe the wronf piece(s) is inserted in terms of the AI model?
+**Feedback:**  
+- The new dataset looks good, and the preliminary model performs well.  
+- Allowing a wrong piece to be “swallowed” if placed under the correct one is not expected to be a major issue.
 
-This is the feedback on my questions.
-
-- Feedback 1: The dataset lookds good and the preliminary model performs well
-- Feedback 2: Allowing the wrong piece being 'swallowed' when placed under the correct one doesn't appear to be a big issue. 
+---
 
 ## Conversation 6 (Date: 28/05/2025)
 
-Lecturer: Peter Jan
+**Lecturer:** Peter Jan
 
-Questions for this conversation:
+**Question:**  
+- My Raspberry Pi shuts down when I connect the servo motor. Adding an external power supply didn’t help. What could be causing this?
 
-- [x] Question 1: My RasPi keeps turning off whenever I connect my servo motor. Additional power supply didn't help. What might be the issue?
+**Feedback:**  
+- The issue is due to damaged servo motor wiring.
 
-This is the feedback on my questions.
-
-- Feedback 1: Servo wiring is faulty.
+---
 
 ## Conversation 7 (Date: 28/05/2025)
 
-Lecturer: Tijn
+**Lecturer:** Tijn
 
-Questions for this conversation:
+**Questions:**  
+- I lost 2 points on my previous Maker's Skills assignment and would like to understand why so I can improve before resubmitting.  
+- I presented my current prototype to get feedback.
 
-- [x] Question 1: In my previous Maker's Skills assignment I lost 2 points, and I need to know what was wrong to fix it before the next submission.
-- [x] Question 2: I showed the prototype I have so far to hear any feedback.
+**Feedback:**  
+- The concern about the servo motor not staying in place inside the toy’s mouth turned out to be unfounded, so it won’t affect my resubmission.  
+- The prototype work is solid. My efforts in the Maker’s Skills component go beyond what's usually expected for this project and should be graded accordingly.
 
-This is the feedback on my questions.
 
-- Feedback 1: The consern was that the servo won't stay in place inside the mouth of the toy, but this is not the case, so it won't be a problem for my next submission.
-- Feedback 2: The work I've done with the prototype looks good. My Maker's Skills part should get good grades because I am doing more in this regard than is usually done for this project.
+
 
 
