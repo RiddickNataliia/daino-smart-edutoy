@@ -88,21 +88,34 @@ class LearningShapesTrainer:
         return frame, self.get_shape_name(detection), confidence
 
     def should_react(self, current_shape, confidence):
-        """Determine if we should react to the current detection"""
-        # Basic checks
-        if current_shape is None:
+        # Skip invalid detections entirely
+        if current_shape is None or current_shape.lower() == "invalid":
             self.waiting_for_background = True
             return False
-        if confidence < 0.7:  # Confidence threshold
+        
+        # Minimum confidence threshold 
+        if confidence < 0.75:
             return False
         
-        # State logic
-        if current_shape == self.last_shape:
-            return self.waiting_for_background
-        else:
-            self.last_shape = current_shape
+        # Debounce period (2 seconds) for same shape
+        time_since_last = time.time() - self.last_reaction_time
+        if current_shape == self.last_shape and time_since_last < 2.0:
+            return False
+        
+        # Background check logic
+        if self.waiting_for_background:
+            # Valid reaction after background
             self.waiting_for_background = False
+            self.last_shape = current_shape
             return True
+        else:
+            # New shape detection
+            if current_shape != self.last_shape:
+                self.last_shape = current_shape
+                return True
+        
+        return False
+
 
     def play_audio(self, shape):
         """Play audio in a non-blocking thread"""
