@@ -1,6 +1,6 @@
 import json
 
-LEARNING_SHAPE = "LEARNING_SHAPE"  # <-- Add this line
+LEARNING_SHAPE = "LEARNING_SHAPE"  
 
 def create_command(action, payload=None):
     return json.dumps({
