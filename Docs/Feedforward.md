@@ -131,6 +131,20 @@
 - The concern about the servo motor not staying in place inside the toy’s mouth turned out to be unfounded, so it won’t affect my resubmission.  
 - The prototype work is solid. My efforts in the Maker’s Skills component go beyond what's usually expected for this project and should be graded accordingly.
 
+---
+
+# Conversation 8 (Date 12/06/2025)
+
+**Lecturer:** Christophe
+
+**Questions:**
+- The Instructubles website fails to upload my photos. What is the issue?
+- In Tech Connect poster template we are requested to insert multiple images. What should they be of?
+
+**Feedback:**
+- I should try creating another account. This issue occured before with other students.
+- I can include photos of components up close as well as photos of the prototype as a whole, photos of the color pieces used during play. I was also advised to create a more visual simplified diagram. 
+
 
 
 
