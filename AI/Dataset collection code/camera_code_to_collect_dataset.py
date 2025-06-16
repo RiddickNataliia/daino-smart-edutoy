@@ -6,7 +6,7 @@ import os
 output_folder = "captured_images"
 os.makedirs(output_folder, exist_ok=True)
 
-# Open webcam (0 = default camera)
+# Open webcam (1 = for usb web-cam)
 cap = cv2.VideoCapture(1)
 
 if not cap.isOpened():

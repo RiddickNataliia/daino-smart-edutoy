@@ -1,25 +1,26 @@
-from game_controller import GameController
-from ai_handler import AIHandler
-from audio_player import AudioPlayer
-from camera_handler import CameraHandler
-from led_controller import LEDController
-from servo_controller import ServoController
-from raspi_client import RaspiClient
-
-client = RaspiClient()
+import turtle
+import tkinter as tk
+from game_manager import GameManager
 
 def main():
-    audio = AudioPlayer()
-    led = LEDController()
-    servo = ServoController()
-    ai = AIHandler()
-    cam = CameraHandler()
-    game = GameController(audio, led, servo, ai, cam)
+    screen = turtle.Screen()
+    canvas = screen.getcanvas()
+    root = canvas.master
 
-    game.start_game("color")  # or "shape"
+    modes = ["Learn Shapes", "Test Shapes", "Learn Colors", "Test Colors"]
+    selected_mode = tk.StringVar(root)
+    selected_mode.set(modes[0])
 
-    client.send("LED green")
-    client.send("SERVO")
+    gm = GameManager()
+
+    def on_mode_change(selection):
+        gm.switch_mode(selection)
+
+    opt_menu = tk.OptionMenu(root, selected_mode, *modes, command=on_mode_change)
+    opt_menu.pack(side=tk.TOP)
+
+    gm.switch_mode(selected_mode.get())
+    screen.mainloop()
 
 if __name__ == "__main__":
     main()
