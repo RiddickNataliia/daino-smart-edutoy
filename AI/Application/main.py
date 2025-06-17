@@ -1,26 +1,30 @@
-import turtle
-import tkinter as tk
 from game_manager import GameManager
 
 def main():
-    screen = turtle.Screen()
-    canvas = screen.getcanvas()
-    root = canvas.master
-
-    modes = ["Learn Shapes", "Test Shapes", "Learn Colors", "Test Colors"]
-    selected_mode = tk.StringVar(root)
-    selected_mode.set(modes[0])
-
     gm = GameManager()
+    modes = ["Learn Shapes", "Test Shapes", "Learn Colors", "Test Colors"]
 
-    def on_mode_change(selection):
-        gm.switch_mode(selection)
+    while True:
+        print("\nSelect a game mode:")
+        for idx, mode in enumerate(modes, 1):
+            print(f"{idx}. {mode}")
+        print("0. Exit")
 
-    opt_menu = tk.OptionMenu(root, selected_mode, *modes, command=on_mode_change)
-    opt_menu.pack(side=tk.TOP)
+        try:
+            choice = int(input("Enter the number of the mode: "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
 
-    gm.switch_mode(selected_mode.get())
-    screen.mainloop()
+        if choice == 0:
+            print("Exiting.")
+            break
+        elif 1 <= choice <= len(modes):
+            selected_mode = modes[choice - 1]
+            print(f"Starting '{selected_mode}' mode...")
+            gm.switch_mode(selected_mode)
+        else:
+            print("Invalid selection. Please choose a valid number.")
 
 if __name__ == "__main__":
     main()

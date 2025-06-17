@@ -18,6 +18,10 @@ class RaspiInterface:
             except ConnectionRefusedError:
                 time.sleep(2)
         raise ConnectionError("Could not connect to Pi")
+    
+    def send_learning_command(self, shape, duration=2):
+        cmd = protocol.create_command('LEARNING_SHAPE', {'shape': shape, 'duration': duration})
+        self.pi_socket.sendall(cmd)
 
     def set_led(self, color):
         cmd = protocol.create_command('SET_LED', {'color': color})

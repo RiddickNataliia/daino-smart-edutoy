@@ -13,22 +13,32 @@ class DinoController:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.servo_pin, GPIO.OUT)
         self.servo_pwm = GPIO.PWM(self.servo_pin, 50)  # 50Hz frequency
-        self.servo_pwm.start(6)  # Start in open position (duty cycle 6%)
+        self.servo_pwm.start(0)  # Initialize with 0% duty cycle
+        
+        # Set initial position using safe movement
+        self._move_servo_safe(6)  # Open position
+        time.sleep(0.5)
         
         # LED Strip Setup
         self.led_strip = WS2812SpiDriver(spi_bus=1, spi_device=0, led_count=8).get_strip()
         self.set_led(Color(255, 255, 255))  # Initial white
-        
+
+    def _move_servo_safe(self, duty_cycle):
+        """Jitter-free servo movement with automatic signal stop"""
+        self.servo_pwm.ChangeDutyCycle(duty_cycle)
+        time.sleep(0.5)  # Allow servo to reach position
+        self.servo_pwm.ChangeDutyCycle(0)  # Stop PWM signal
+
     def set_led(self, color):
         self.led_strip.set_all_pixels(color)
         self.led_strip.show()
     
     def mouth_action(self, close_time=1):
-        """Close and open mouth once"""
-        self.servo_pwm.ChangeDutyCycle(8.5)  # Close
+        """Close and open mouth once without jitter"""
+        self._move_servo_safe(7.5)  # Close
         time.sleep(close_time)
-        self.servo_pwm.ChangeDutyCycle(6)  # Open
-    
+        self._move_servo_safe(6)    # Open
+
     def handle_command(self, data):
         action = data.get('action')
         payload = data.get('payload')
@@ -44,6 +54,8 @@ class DinoController:
                 print("Invalid payload format")
 
     def cleanup(self):
+        # Return to open position before stopping
+        self._move_servo_safe(6)
         self.servo_pwm.stop()
         GPIO.cleanup()
         self.set_led(Color(0, 0, 0))
