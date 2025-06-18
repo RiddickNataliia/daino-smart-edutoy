@@ -9,10 +9,10 @@ from threading import Thread
 
 class LearningShapesTrainer:
     def __init__(self, pi_ip='192.168.168.167'):
-        # Pygame initialization
+        # Pygame audio optimization
+        pygame.mixer.pre_init(44100, -16, 2, 512)
         pygame.init()
         pygame.display.set_mode((1, 1), pygame.HIDDEN)
-        pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=2048)
         
         # Camera setup
         self.cam = cv2.VideoCapture(1)
@@ -35,7 +35,8 @@ class LearningShapesTrainer:
         
         # Timing controls
         self.last_reaction_time = 0
-        self.cooldown = 3.0  # 3 seconds between reactions
+        self.base_cooldown = 1.0
+        self.cooldown = self.base_cooldown
         
         # Audio setup
         self.audio_files = {}
@@ -116,7 +117,6 @@ class LearningShapesTrainer:
         
         return False
 
-
     def play_audio(self, shape):
         """Play audio in a non-blocking thread"""
         if not self.audio_playing and shape in self.audio_files:
@@ -188,6 +188,8 @@ class LearningShapesTrainer:
                 if reaction and current_shape:
                     try:
                         duration = self.audio_files[current_shape].get_length()
+                        servo_operation_time = 1.5  # 1s close + 0.5s reopen
+                        self.cooldown = duration + servo_operation_time + self.base_cooldown
                         self.send_to_pi(current_shape, duration)
                         self.play_audio(current_shape)
                         self.last_reaction_time = time.time()
