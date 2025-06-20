@@ -12,11 +12,11 @@ class DinoController:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.servo_pin, GPIO.OUT)
         self.servo_pwm = GPIO.PWM(self.servo_pin, 50)  # 50Hz frequency
-        self.servo_pwm.start(0)  # Initialize with 0% duty cycle
+        self.servo_pwm.start(0)  # 0% duty cycle
 
         # LED Strip Setup
         self.led_strip = WS2812SpiDriver(spi_bus=1, spi_device=0, led_count=8).get_strip()
-        time.sleep(0.1)  # Ensure SPI bus is ready
+        time.sleep(0.1)  # wait for SPI
         self.set_led(Color(255, 255, 255))  # Set to white at startup
         time.sleep(0.05) 
         self.set_led(Color(255, 255, 255))  # Repeat for reliability
@@ -73,7 +73,10 @@ class DinoController:
         self.servo_pwm.stop()
         GPIO.cleanup()
         self.set_led(Color(0, 0, 0))
-        self.led_strip.close()
+        try:
+            self.led_strip.close()
+        except Exception as e:
+            print(f"Failed to close LED strip cleanly: {e}")
 
 def run_server():
     dino = DinoController()
