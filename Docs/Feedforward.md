@@ -143,7 +143,23 @@
 
 **Feedback:**
 - I should try creating another account. This issue occured before with other students.
-- I can include photos of components up close as well as photos of the prototype as a whole, photos of the color pieces used during play. I was also advised to create a more visual simplified diagram. 
+- I can include photos of components up close as well as photos of the prototype as a whole, photos of the color pieces used during play. I was also advised to create a more visual simplified diagram.
+
+---
+
+# Conversation 9 (Date 20/06/2025)
+
+**Lecturer:** Claudia
+
+**Questions:**
+- In the final reflection assignment, how do I make sure that my adjectives are clearly explained?
+- Who will be the jury for the presentation?
+- What should be the duration of the presentation? Any tips on what I should definitely include in it?
+
+**Feedback:**
+- I need to dig deeper into my feelings and why I feel that way. I got some good examples that helped me understand what to do.
+- I am not allowed to know the jury.
+- My presentation should last 10 minutes max. All the tips are in the presentation on Leho. The presentation should have a personal story.
 
 
 
