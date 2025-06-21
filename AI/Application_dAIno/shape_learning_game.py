@@ -2,30 +2,37 @@ import os
 import time
 import pygame
 import cv2
-from threading import Thread, Event
+import threading
 import protocol
+import traceback
+from threading import Thread
+from collections import deque
+
 from base_game import BaseGameMode
 
 class LearningShapesMode(BaseGameMode):
-    def __init__(self, audio_path="audio/shape learn"):
-        super().__init__()
+    def __init__(self, audio_path="audio/shape learn", camera_index=1):
+        super().__init__(camera_index)
+        self.load_model('models/shape_model.pt')
+        self.audio_path = audio_path
         self.audio_files = self._load_audio(audio_path)
         self.last_reaction_time = 0
         self.base_cooldown = 1.0
         self.cooldown = self.base_cooldown
-        self.detection_buffer = []
-        self.min_consistent_frames = 4
+        self.min_consistent_frames = 10
+        self.detection_buffer = deque(maxlen=self.min_consistent_frames)
         self.currently_processing = False
-        self.last_invalid_time = 0
-        self.invalid_cooldown = 10.0
         self.audio_playing = False
         self.reaction_in_progress = False
         self.servo_busy = False
         self.servo_last_end_time = 0
-        self.invalid_state = False
-        self.invalid_start_time = 0
-        self.invalid_led_reset_duration = 5.0
-        self.reaction_done_event = Event()
+        
+        # Independent timers for invalid handling
+        self.invalid_led_timer_active = False
+        self.invalid_led_timer_start = 0
+        self.last_invalid_detection_time = 0
+        self.invalid_detection_cooldown = 10.0
+        self.invalid_led_duration = 5.0
 
     def _load_audio(self, path):
         audio_files = {}
@@ -36,16 +43,10 @@ class LearningShapesMode(BaseGameMode):
                 audio_files[shape] = pygame.mixer.Sound(sound_file)
         return audio_files
 
-    def should_react(self, current_shape, confidence):
-        if not current_shape or current_shape.lower() == "invalid" or confidence < 0.75:
-            return False
-        time_since_last = time.time() - self.last_reaction_time
-        return time_since_last >= self.cooldown
-
     def play_audio(self, shape):
         if shape in self.audio_files and not self.audio_playing:
             self.audio_playing = True
-            Thread(target=self._audio_thread, args=(shape,)).start()
+            threading.Thread(target=self._audio_thread, args=(shape,), daemon=True).start()
 
     def _audio_thread(self, shape):
         sound = self.audio_files[shape]
@@ -74,86 +75,109 @@ class LearningShapesMode(BaseGameMode):
     def run(self):
         print("Starting Shape Learning mode...")
         try:
+            last_display_time = time.time()
+            display_text = ""
+            
             while True:
                 frame, detection, confidence = self.process_frame()
                 if frame is None:
                     continue
 
                 now = time.time()
+                display_frame = frame.copy()
 
+                # Handle servo busy state
                 if self.servo_busy:
-                    display_frame = frame.copy()
                     cv2.putText(display_frame, "Please wait...", (10, 70),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-                    cv2.imshow("Learning Mode", display_frame)
-                    if cv2.waitKey(1) == ord('q'):
-                        break
-                    continue
-
-                # Resetting invalid state after timeout
-                if self.invalid_state and (now - self.invalid_start_time > self.invalid_led_reset_duration):
-                    print("Red LED timeout reached. Resetting to white.")
-                    self.send_to_pi("reset", 0, color="white")
-                    self.invalid_state = False
-                    self.audio_playing = False  # Ensures audio_playing is reset
-
-                if detection == "invalid" and (now - self.servo_last_end_time < 1.5):
-                    continue
-
-                if detection is not None and detection.lower() == "invalid":
-                    if (not self.invalid_state
-                        and not self.reaction_in_progress
-                        and not self.audio_playing
-                        and now - self.last_invalid_time > self.invalid_cooldown):
-                        print("Invalid piece detected!")
-                        if "invalid" in self.audio_files:
-                            self.play_audio("invalid")
-                        self.send_to_pi("invalid", 0, correct=False, color="red")
-                        self.invalid_state = True
-                        self.invalid_start_time = now
-                        self.last_invalid_time = now
-                    continue
-
-                current_shape = detection if detection is not None else None
-
-                # Resetting invalid state and audio_playing if a valid shape is detected after invalid
-                if self.invalid_state and current_shape and confidence >= 0.75:
-                    print("Valid shape detected after invalid. Resetting state.")
-                    self.send_to_pi("reset", 0, color="white")
-                    self.invalid_state = False
-                    self.audio_playing = False
-                if not self.currently_processing:
-                    if current_shape and confidence >= 0.75:
-                        self.detection_buffer.append((current_shape, confidence))
-                        print(f"Buffering: {len(self.detection_buffer)}/{self.min_consistent_frames} frames")
-                        if len(self.detection_buffer) >= self.min_consistent_frames:
-                            print("Detection buffer filled, starting processing thread.")
-                            self.currently_processing = True
-                            Thread(target=self._handle_confirmed_detection, args=(current_shape,)).start()
-                            self.detection_buffer.clear()
+                else:
+                    # Only update display text when not busy
+                    if detection and confidence >= 0.75:
+                        display_text = f"{detection} ({confidence:.2f})"
                     else:
-                        self.detection_buffer.clear()
+                        display_text = ""
 
+                # Handle LED timer independently
+                if self.invalid_led_timer_active:
+                    if now - self.invalid_led_timer_start > self.invalid_led_duration:
+                        print("Red LED timeout reached. Resetting to white.")
+                        self.send_to_pi("reset", 0, color="white")
+                        self.invalid_led_timer_active = False
+
+                # Process detections
+                if detection and confidence >= 0.75:
+                    self.detection_buffer.append(detection.lower())
+                    
+                    # Check for 10 consecutive identical detections
+                    if len(self.detection_buffer) == self.min_consistent_frames:
+                        if all(x == self.detection_buffer[0] for x in self.detection_buffer):
+                            consistent_detection = self.detection_buffer[0]
+                            
+                            # Handle invalid detection
+                            if consistent_detection == "invalid":
+                                # Check cooldown for invalid detections
+                                if now - self.last_invalid_detection_time > self.invalid_detection_cooldown:
+                                    print("10 consecutive invalid detections!")
+                                    Thread(target=self._handle_invalid_detection).start()
+                            
+                            # Handle shape detection
+                            else:
+                                print(f"10 consecutive detections of shape: {consistent_detection}")
+                                Thread(target=self._handle_confirmed_detection, 
+                                      args=(consistent_detection,)).start()
+                            
+                            self.detection_buffer.clear()
+                else:
+                    self.detection_buffer.clear()
+
+                # Display cooldown status
                 time_since_last = time.time() - self.last_reaction_time
-                display_frame = frame.copy()
                 cv2.rectangle(display_frame, (10, 100), (110, 120), (50, 50, 50), -1)
                 if time_since_last < self.cooldown:
                     progress = int(100 * (time_since_last / self.cooldown))
                     cv2.rectangle(display_frame, (10 + progress, 100), (110, 120), (0, 255, 0), -1)
+                    
                 status = "Ready" if time_since_last >= self.cooldown else "Cooling down"
                 cv2.putText(display_frame, status, (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
-                if current_shape:
-                    text = f"{current_shape} ({confidence:.2f})"
-                    cv2.putText(display_frame, text, (10, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-                cv2.imshow("Learning Mode", display_frame)
+                
+                # Display shape info
+                if display_text:
+                    cv2.putText(display_frame, display_text, (10, 155), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                
+                # Only update display every 100ms to reduce flickering
+                if now - last_display_time > 0.1:
+                    cv2.imshow("Learning Mode", display_frame)
+                    last_display_time = now
 
                 if cv2.waitKey(1) == ord('q'):
                     break
+        except Exception as e:
+            print(f"Error during game execution: {e}")
+            traceback.print_exc()
         finally:
             self.cleanup()
 
+    def _handle_invalid_detection(self):
+        """Handle 10 consecutive invalid detections"""
+        try:
+            print("Invalid piece detected (after 10 frames)!")
+            if "invalid" in self.audio_files:
+                self.play_audio("invalid")
+            
+            # Activate LED timer
+            self.invalid_led_timer_active = True
+            self.invalid_led_timer_start = time.time()
+            self.send_to_pi("invalid", 0, correct=False, color="red")
+            
+            # Update last detection time for cooldown
+            self.last_invalid_detection_time = time.time()
+            
+        except Exception as e:
+            print(f"Error in invalid detection: {e}")
+
     def _handle_confirmed_detection(self, shape):
-        print(f"Starting processing for shape: {shape}")
+        """Handle 10 consecutive shape detections"""
+        print(f"Processing confirmed shape: {shape}")
         self.reaction_in_progress = True
         self.servo_busy = True
 
@@ -163,14 +187,20 @@ class LearningShapesMode(BaseGameMode):
                 time.sleep(0.3)
                 verify_frame, verify_shape, verify_conf = self.process_frame()
                 print(f"Verification: {verify_shape} ({verify_conf:.2f})")
-                if verify_shape == shape and verify_conf >= 0.7:
+                if verify_shape and verify_shape.lower() == shape and verify_conf >= 0.7:
                     duration = self.audio_files[shape].get_length()
                     self.update_cooldown(duration)
+                    
+                    # Activate servo and LED
                     self.send_to_pi(shape, duration, correct=True)
-                    time.sleep(0.2)
+                    
+                    # Play shape audio
                     self.play_audio(shape)
+                    
                     print(f"Processed: {shape}")
                     self.last_reaction_time = time.time()
+                    
+                    # Wait for audio and servo to complete
                     time.sleep(duration + 1.5)
                 else:
                     print("Verification failed or shape changed.")
@@ -184,9 +214,7 @@ class LearningShapesMode(BaseGameMode):
                 except Exception as e:
                     print("Failed to reset LED:", e)
                 self.servo_last_end_time = time.time()
-                print("Finished processing.")
-                self.currently_processing = False
                 self.reaction_in_progress = False
                 self.servo_busy = False
-                self.invalid_state = False
-        Thread(target=reaction_thread).start()
+                
+        threading.Thread(target=reaction_thread, daemon=True).start()

@@ -2,11 +2,10 @@ import cv2
 from ultralytics import YOLO
 import pygame
 
-
 class BaseGameMode:
-    def __init__(self, camera_index=1, model_path='shape_model.pt'):
+    def __init__(self, camera_index=1):
         self.cam = cv2.VideoCapture(camera_index)
-        self.model = YOLO(model_path)
+        self.model = None  
         self._init_pygame()
 
     def _init_pygame(self):
@@ -14,7 +13,14 @@ class BaseGameMode:
         pygame.init()
         pygame.display.set_mode((1, 1), pygame.HIDDEN)
 
+    def load_model(self, model_path):
+        """Load specific model for child class"""
+        self.model = YOLO(model_path)
+
     def process_frame(self):
+        if not self.model:
+            raise ValueError("Model not loaded! Call load_model() first")
+            
         ret, frame = self.cam.read()
         if not ret:
             return None, None, 0.0
@@ -35,4 +41,3 @@ class BaseGameMode:
         self.cam.release()
         pygame.quit()
         cv2.destroyAllWindows()
-
