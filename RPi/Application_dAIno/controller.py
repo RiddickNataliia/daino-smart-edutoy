@@ -11,36 +11,31 @@ class DinoController:
         self.servo_pin = 5
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.servo_pin, GPIO.OUT)
-        self.servo_pwm = GPIO.PWM(self.servo_pin, 50)  # 50Hz frequency
-        self.servo_pwm.start(0)  # 0% duty cycle
+        self.servo_pwm = GPIO.PWM(self.servo_pin, 50)
+        self.servo_pwm.start(0)
 
         # LED Strip Setup
         self.led_strip = WS2812SpiDriver(spi_bus=1, spi_device=0, led_count=8).get_strip()
-        time.sleep(0.1)  # wait for SPI
-        self.set_led(Color(255, 255, 255))  # Set to white at startup
-        time.sleep(0.05) 
-        self.set_led(Color(255, 255, 255))  # Repeat for reliability
-
-        # Safe open position at startup
+        time.sleep(0.1)
+        self.set_led(Color(255, 255, 255))
+        time.sleep(0.05)
+        self.set_led(Color(255, 255, 255))
         self._move_servo_safe(6)
         time.sleep(0.5)
 
     def _move_servo_safe(self, duty_cycle):
-        """Jitter-free servo movement with automatic signal stop"""
         self.servo_pwm.ChangeDutyCycle(duty_cycle)
-        time.sleep(0.5)  # Allow servo to reach position
-        self.servo_pwm.ChangeDutyCycle(0)  # Stop PWM signal
+        time.sleep(0.5)
+        self.servo_pwm.ChangeDutyCycle(0)
 
     def set_led(self, color):
-        """Set all LED pixels to a specific color"""
         self.led_strip.set_all_pixels(color)
         self.led_strip.show()
 
     def mouth_action(self, close_time=1):
-        """Close and open mouth once without jitter"""
-        self._move_servo_safe(8)  # Close
+        self._move_servo_safe(8)
         time.sleep(close_time)
-        self._move_servo_safe(6)  # Open
+        self._move_servo_safe(6)
 
     def handle_command(self, data):
         action = data.get('action')
@@ -50,10 +45,10 @@ class DinoController:
             try:
                 duration = float(payload.get('duration', 2.0))
                 print(f"Learning shape action received: duration={duration}")
-                self.set_led(Color(0, 255, 0))  # Green
+                self.set_led(Color(0, 255, 0))
                 time.sleep(duration)
                 self.mouth_action()
-                self.set_led(Color(255, 255, 255))  # Reset to white
+                self.set_led(Color(255, 255, 255))
             except Exception as e:
                 print(f"Error handling LEARNING_SHAPE: {e}")
 
@@ -64,23 +59,41 @@ class DinoController:
                 self.set_led(Color(255, 0, 0))
             elif color == "green":
                 self.set_led(Color(0, 255, 0))
+            elif color == "soft_yellow":
+                self.set_led(Color(255, 180, 50))
             else:
                 self.set_led(Color(255, 255, 255))
 
     def cleanup(self):
         print("Cleaning up GPIO and shutting down...")
-        self._move_servo_safe(6)
-        self.servo_pwm.stop()
-        GPIO.cleanup()
-        self.set_led(Color(0, 0, 0))
         try:
-            self.led_strip.close()
+            # Safely stop PWM before cleanup
+            if hasattr(self, 'servo_pwm') and self.servo_pwm:
+                self.servo_pwm.stop()
+                # Prevent double-stop in __del__
+                self.servo_pwm = None
         except Exception as e:
-            print(f"Failed to close LED strip cleanly: {e}")
+            print(f"Error stopping PWM: {e}")
+        
+        try:
+            self._move_servo_safe(6)
+        except Exception as e:
+            print(f"Error moving servo: {e}")
+        
+        try:
+            self.set_led(Color(0, 0, 0))
+        except Exception as e:
+            print(f"Error setting LEDs off: {e}")
+        
+        try:
+            GPIO.cleanup()
+        except Exception as e:
+            print(f"Error during GPIO cleanup: {e}")
 
 def run_server():
     dino = DinoController()
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(('0.0.0.0', 8888))
     server.listen(1)
     print("Server started. Waiting for connections...")
@@ -105,10 +118,11 @@ def run_server():
                 conn.close()
                 print("Connection closed")
     except KeyboardInterrupt:
-        print("Shutting down...")
+        print("\nShutting down gracefully...")
     finally:
         dino.cleanup()
         server.close()
+        print("Server closed")
 
 if __name__ == "__main__":
     run_server()
