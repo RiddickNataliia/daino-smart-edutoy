@@ -85,6 +85,28 @@ class LearningColorsMode(BaseGameMode):
 
     def run(self):
         print("Starting Color Learning mode...")
+        
+        # Initialize pygame mixer
+        pygame.mixer.init()
+        
+        # Set LED to white at start
+        self.send_to_pi("reset", 0, color="white")
+        
+        # Play start audio if available
+        start_audio_path = os.path.join(self.audio_path, "start.mp3")
+        if os.path.exists(start_audio_path):
+            try:
+                sound = pygame.mixer.Sound(start_audio_path)
+                sound.play()
+                print("Playing start audio...")
+                # Wait for audio to finish before starting game
+                while pygame.mixer.get_busy():
+                    time.sleep(0.1)
+            except Exception as e:
+                print(f"Error playing start.mp3: {e}")
+        else:
+            print(f"Start audio not found at: {start_audio_path}")
+        
         try:
             while True:
                 frame, detection, confidence = self.process_frame()
