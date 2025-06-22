@@ -67,25 +67,27 @@ class DinoController:
     def cleanup(self):
         print("Cleaning up GPIO and shutting down...")
         try:
-            # Safely stop PWM before cleanup
-            if hasattr(self, 'servo_pwm') and self.servo_pwm:
-                self.servo_pwm.stop()
-                # Prevent double-stop in __del__
-                self.servo_pwm = None
-        except Exception as e:
-            print(f"Error stopping PWM: {e}")
-        
-        try:
+            # Move servo first while PWM is still active
             self._move_servo_safe(6)
         except Exception as e:
             print(f"Error moving servo: {e}")
         
         try:
+            # Stop PWM and clear reference
+            if hasattr(self, 'servo_pwm') and self.servo_pwm is not None:
+                self.servo_pwm.stop()
+                self.servo_pwm = None
+        except Exception as e:
+            print(f"Error stopping PWM: {e}")
+        
+        try:
+            # Turn off LEDs
             self.set_led(Color(0, 0, 0))
         except Exception as e:
             print(f"Error setting LEDs off: {e}")
         
         try:
+            # Clean up GPIO last
             GPIO.cleanup()
         except Exception as e:
             print(f"Error during GPIO cleanup: {e}")
