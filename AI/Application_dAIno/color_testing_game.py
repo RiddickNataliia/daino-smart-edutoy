@@ -158,6 +158,8 @@ class ColorTestingMode(BaseGameMode):
     def run(self):
         print("Starting Color Testing mode...")
         print(f"Current best streak: {self.best_streak}")
+        self.current_streak = 0
+        self.session_correct = 0
         self.play_startup_audio()
         try:
             while True:
