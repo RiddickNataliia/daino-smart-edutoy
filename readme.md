@@ -6,7 +6,6 @@
   <img src="https://img.shields.io/badge/Ultralytics-YOLO-00FFFF?logo=yolo&logoColor=black" alt="YOLO" />
   <img src="https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch" />
   <img src="https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white" alt="OpenCV" />
-  <img src="https://img.shields.io/badge/Bluetooth%20LE-GATT-0082FC?logo=bluetooth&logoColor=white" alt="Bluetooth LE" />
   <img src="https://img.shields.io/badge/Pygame-audio-000000?logo=pygame&logoColor=white" alt="Pygame" />
   <img src="https://img.shields.io/badge/GPIO-WS2812%20%2B%20Servo-8A2BE2" alt="GPIO" />
 </p>
