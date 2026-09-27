@@ -15,7 +15,7 @@ physical block in dAIno's mouth, a camera and a fine-tuned YOLO model identify i
 and dAIno reacts in real time with LED colors, a chomping servo-driven mouth, and spoken audio
 feedback. Conceived, designed, and built end-to-end (toy body, hardware assembly, computer vision,
 control software, and voice prompts) as part of an Applied Computer Science project at Howest, and
-recognized with a prize on Instructables.
+recognized with a prize on Instructables https://www.instructables.com/AI-powered-Dino-Toy-That-Teaches-Kids-Colors-and-S
 
 ## How it works
 
