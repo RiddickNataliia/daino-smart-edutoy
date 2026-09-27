@@ -102,11 +102,3 @@ python game_manager.py
 ```
 
 Update the Pi's IP address in `game_manager.py` (`pi_ip`) to match your Raspberry Pi.
-
-## Background
-
-Built solo — idea, dinosaur body design and physical build, hardware assembly, dataset collection
-and annotation, YOLO model training, Python control logic, and voice prompts — as an Applied
-Computer Science project at Howest. Despite being a rough first prototype (papier-mâché body, an
-exposed Raspberry Pi), it was durable and engaging enough that children played with it for extended
-periods, and it drew interest from a special needs school. The project won a prize on Instructables.
